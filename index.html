@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembelajaran Informatika - Perangkat Keras Komputer</title>
+  <style>
+    /* --- CSS TAMBAHAN UNTUK GAMBAR RESPONSIF --- */
+    /* Kontainer Gambar di Kartu Perangkat */
+    .device-media {
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #f1f5f9;
+      margin-bottom: 10px; 
+        
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Gambar pada Kartu Perangkat */
+    .device-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Agar gambar memenuhi area tanpa distorsi/gepeng */
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .device-card:hover .device-img {
+      transform: scale(1.05); /* Efek zoom halus saat di-hover */
+    }
+
+        /* Styling Gambar di Dalam Popup Modal */
+      .modal-img {
+        width: 100%;
+        max-height: 220px;       /* Batas tinggi maksimal agar modal tidak terlalu panjang */
+        object-fit: contain;      /* Gambar tidak terpotong & rasio asli tetap terjaga */
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 8px;
+        display: block;
+        margin: 0 auto 15px;      /* Memposisikan gambar di tengah */
+      }
+
+      /* Penyesuaian khusus untuk layar HP */
+      @media (max-width: 480px) {
+        .modal-img {
+          max-height: 180px;      /* Ukuran lebih proporsional di layar HP */
+        }
+      }
+  
+    /*pemabatas */
+    
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --accent: #f59e0b;
+      --bg-color: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+  /* Pre dan post test */
+    .tombol-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #673ab7; /* Warna ungu khas Google Form */
+    color: white;
+    text-decoration: none; /* Menghilangkan garis bawah tautan */
+    border-radius: 5px; /* Membuat sudut tombol melengkung */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  /* Efek saat kursor mouse menyentuh tombol */
+  .tombol-link:hover {
+    background-color: #512da8;
+  }
+
+  /* HEADER (UKURAN LEBIH RINGKAS/KECIL) */
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6);
+      color: white;
+      padding: 16px 15px; /* Diperkecil dari 35px 20px */
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 20%);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    header h1 {
+      margin: 0 0 4px;     /* Margin bawah diperkecil dari 10px ke 4px */
+      font-size: 1.4rem;   /* Diperkecil dari 2.2rem */
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin: 0 auto;
+      opacity: 0.9;
+      font-size: 0.88rem;  /* Diperkecil dari 1.05rem */
+      max-width: 600px;
+    }
+
+  /* NAVIGATION BAR (UKURAN LEBIH RINGKAS & RAPAT) */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 4px; /* Diperkecil dari 8px agar tombol lebih rapat */
+      flex-wrap: wrap;
+      padding: 6px 10px; /* Diperkecil dari 12px */
+      background: var(--card-bg);
+      position: static;
+      top: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      z-index: 100;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    nav button {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 10px; /* Diperkecil dari 10px 18px */
+      border-radius: 8px; /* Diperkecil dari 12px agar proporsional */
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem; /* Diperkecil dari 0.95rem */
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px; /* Jarak icon dan teks dalam tombol diperkecil dari 6px */
+    }
+
+    nav button:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    nav button.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    /* MAIN CONTAINER & PAGES */
+    .container {
+      width: min(1000px, 92%);
+      margin: 30px auto 60px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.35s ease-in-out forwards;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS & CARDS */
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    h2 {
+      color: var(--primary-dark);
+      margin-top: 0;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 12px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-top: -6px;
+      margin-bottom: 20px;
+    }
+
+    /* LIST STYLES */
+    .learning-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .learning-list li {
+      background: var(--primary-light);
+      padding: 10px 10px;
+      border-radius: 10px;
+      border-left: 4px solid var(--primary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+
+    /* PERANGKAT GRID */
+    .device-category {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+    }
+
+    .device-category h3 {
+      margin: 0 0 4px;
+      color: var(--primary-dark);
+    }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .device-card {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fff;
+    }
+
+    .device-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+    }
+
+    .device-card .icon { font-size: 40px; }
+    .device-card h4 { margin: 8px 0 4px; font-size: 0.95rem; }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* SIMULASI */
+    .sim-area {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 20px;
+      align-items: start;
+      margin-top: 20px;
+    }
+
+    .draggables {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: 14px;
+      min-height: 150px;
+      align-content: flex-start;
+    }
+
+    .drag-item {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: grab;
+      user-select: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: border-color 0.2s, transform 0.1s;
+    }
+
+    .drag-item:active { cursor: grabbing; transform: scale(0.95); }
+
+    .zones {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .zone {
+      min-height: 140px;
+      border: 2px dashed #93c5fd;
+      background: var(--primary-light);
+      border-radius: 14px;
+      padding: 12px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .zone h4 { margin: 0 0 10px; color: var(--primary-dark); }
+    .zone.correct { border-color: #22c55e; background: #f0fdf4; }
+    .zone.wrong { border-color: #ef4444; background: #fef2f2; }
+
+    /* QUIZ & FORM */
+    .quiz-question {
+      margin-bottom: 20px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .quiz-question p { font-weight: 700; margin-top: 0; }
+    
+    .quiz-question label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      padding: 10px 14px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .quiz-question label:hover {
+      background: var(--primary-light);
+    }
+
+    /* BUTTONS & CONTROLS */
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    
+    .btn-secondary { background: #e2e8f0; color: var(--text-main); }
+    .btn-secondary:hover { background: #cbd5e1; }
+
+    #simResult, #quizResult, #preTestResult {
+      margin-top: 16px;
+      font-weight: bold;
+      padding: 14px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 200;
+    }
+
+    .modal-content {
+      width: min(480px, 100%);
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 16px;
+      border: none;
+      background: transparent;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-icon { font-size: 56px; text-align: center; margin-bottom: 10px; }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 768px) {
+      .sim-area { grid-template-columns: 1fr; }
+      .zones { grid-template-columns: 1fr; }
+      nav button { padding: 8px 12px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🖥️ Media Pembelajaran Informatika</h1>
+  <p>Sistem Komputer & Pengenalan Perangkat Keras Interaktif</p>
+</header>
+
+<nav>
+  <button id="btn-tujuan" onclick="switchTab('tujuan')">🎯 Tujuan</button>
+  <button id="btn-apersepsi" onclick="switchTab('apersepsi')">💡 Apersepsi</button>
+  <button id="btn-pretest" onclick="switchTab('pretest')">📝 Pre Test</button>
+  <button id="btn-materi" onclick="switchTab('materi')">📖 Materi</button>
+  <button id="btn-perangkat" onclick="switchTab('perangkat')">⚙️ Perangkat Keras</button>
+  <button id="btn-lunak" onclick="switchTab('lunak')">📱 Perangkat Lunak</button>
+  <button id="btn-simulasi" onclick="switchTab('simulasi')">🎮 Simulasi</button>
+  <button id="btn-posttest" onclick="switchTab('posttest')">📊 Post Test</button>
+</nav>
+
+<main class="container">
+
+  <!-- PAGE 1: TUJUAN PEMBELAJARAN -->
+  <section id="page-tujuan" class="page card">
+    <h2>Tujuan Pembelajaran</h2>
+    <p class="subtitle">Capaian yang diharapkan setelah mengikuti materi ini:</p>
+    <ul class="learning-list">
+      <li><b>Pertemuan 1:</b> Peserta didik mampu mengidentifikasi dan mengkategorikan berbagai jenis perangkat keras (hardware) berdasarkan fungsinya (input, prosesor, output, storage).</li>
+      <li><b>Pertemuan 2:</b> Peserta didik mampu menjelaskan perbedaan dan fungsi dari perangkat lunak (software) sistem operasi dan aplikasi, serta mengidentifikasi contoh-contohnya.</li>
+    </ul>
+      
+     
+  </section>
+
+  <!-- PAGE 2: APERSEPSI -->
+  <section id="page-apersepsi" class="page card">
+    <h2>💡 Apersepsi</h2>
+    <p class="subtitle">Bayangkan bagaimana komputer bekerja dalam kehidupan sehari-hari!</p>
+    <div style="background: #eff6ff; border-left: 5px solid #2563eb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <p style="margin: 0; font-size: 1.05rem;">
+        Pernahkah kamu berpikir bagaimana teks yang kamu ketik di keyboard bisa langsung muncul di layar monitor? 
+        Atau bagaimana lagu yang kamu putar di aplikasi bisa terdengar melalui earphone?
+      </p>
+    </div>
+    <p>
+      Sama seperti tubuh manusia yang memiliki <strong>mata/telinga</strong> (penerima informasi), 
+      <strong>otak</strong> (pengolah informasi), dan <strong>tangan/suara</strong> (penghasil aksi), 
+      komputer juga memiliki komponen khusus dengan tugasnya masing-masing!
+    </p>
+  </section>
+
+  <!-- PAGE 3: PRE TEST -->
+  <section id="page-pretest" class="page card">
+    <h2>📝 Pre Test</h2>
+    <p class="subtitle">Uji pengetahuan awalmu sebelum mempelajari materi!</p>
+    
+    <div class="quiz-question">
+      <ul>
+      <h3>Pre-Test Perangkat keras sistem komputer</h3>
+      <a href="https://forms.gle/WCCXQkA8vVKzJe357"class="tombol-link" target="_blank">Buka Google Form </a>
+        <h3>Pre-Test Perangkat lunak sistem komputer</h3>
+      <a href="https://forms.gle/xHcn6s6Dqrx56z9F9"class="tombol-link" target="_blank">Buka Google Form</a>
+      </ul>
+   
+  </section>
+
+  <!-- PAGE 4: MATERI -->
+  <section id="page-materi" class="page card" Style="text-align: justify">
+    <h2>📖 Konsep Sistem Komputer</h2>
+    <p>Sistem komputer adalah sekumpulan elemen yang saling berkaitan, berinteraksi, dan bekerja sama untuk mengolah data sehingga menghasilkan informasi yang bermanfaat bagi penggunanya</p>
+      <h3> Komponen Utama Sistem Komputer</h3>
+  
+        <h4>A. Perangkat Keras</h4>
+        <p> Perangkat keras (hardware) adalah komponen fisik yang sangat penting dalam sistem komputer. Dengan berbagai jenis dan fungsinya, hardware memungkinkan komputer untuk menjalankan tugas komputasi, menyimpan data, dan menghubungkan pengguna ke jaringan.
+      Dengan memahami perangkat keras, kita dapat lebih menghargai peran teknologi ini dalam mendukung aktivitas sehari-hari, baik di rumah, kantor, maupun sekolah. 
+      Pemilihan hardware yang tepat juga dapat meningkatkan efisiensi dan produktivitas dalam menggunakan komputer.</p> 
+          <h4>Secara umum, fungsi hardware terbagi menjadi empat tugas utama:</h4>
+          <ul>
+            <li>Menerima Input (Masukan): Mengumpulkan data atau perintah dari pengguna melalui perangkat seperti keyboard, mouse, scanner, atau mikrofon.</li>
+            <li>Memproses Data: Mengolah data mentah menjadi informasi yang berguna menggunakan komponen pemroses seperti CPU dan RAM.</li>
+            <li>Memberikan Output (Keluaran): Menampilkan atau menyajikan hasil data yang sudah diolah kepada pengguna melalui monitor, printer, atau speaker.</li>
+            <li>Menyimpan Data (Storage): Menyimpan informasi secara sementara (RAM) maupun permanen (Hard Disk atau SSD).</li>
+          </ul>
+       
+
+      <!-- Section untuk Perangkat Lunak -->
+        <h4>B. Perangkat Lunak</h4>
+        <p>Perangkat lunak (bahasa Inggris: software) adalah sekumpulan data elektronik, program, atau instruksi yang disimpan dan diatur oleh komputer untuk menjalankan tugas tertentu.
+          Perangkat lunak tidak memiliki wujud fisik (tidak bisa dipegang), tetapi fungsinya sangat vital sebagai penjembatani antara pengguna (user) dengan perangkat keras (hardware).</p>
+        <h4>Fungsi Utama Perangkat Lunak</h4>
+        <ul>
+            <li> Mengelola perangkat keras: Mengatur kinerja komponen fisik komputer agar dapat bekerja secara maksimal. </li>
+            <li>Menyediakan antarmuka: Menjadi media interaksi bagi pengguna untuk memberikan perintah kepada komputer.</li>
+            <li>Penerjemah instruksi: Mengubah perintah dari pengguna atau aplikasi lain ke dalam bahasa mesin yang dimengerti oleh perangkat keras.</li>
+            <li>Menjalankan tugas spesifik: Membantu menyelesaikan pekerjaan tertentu seperti menulis dokumen, mengedit gambar, atau mengelola data.</li>
+        </ul>
+        <h4>Jenis-jenis Perangkat Lunak</h4>
+        <ul>
+            <li><b>Perangkat Lunak Sistem (System Software):</b> Berfungsi mengelola sumber daya komputer secara umum dan mendasar. Contoh Sistem operasi seperti Microsoft Windows, macOS, dan Linux, serta utilitas seperti antivirus. </li>
+            <li><b>Perangkat Lunak Aplikasi (Application Software):</b> Dirancang untuk membantu pengguna menyelesaikan tugas sehari-hari yang spesifik. Seperti Pengolah kata/perkantora contoh Microsoft Office, 
+              Peramban internet contoh Google Chrome, dan Pengolah gambar contoh Adobe Photoshop.</li>
+            <li><b>Perangkat Lunak Pengembangan (Development Software):</b> Digunakan oleh pembuat program (developer) untuk menulis, menguji, dan memelihara kode program. Contoh: IDE (Integrated Development Environment), kompiler, dan DBMS (Database Management System).</li>
+        </ul>
+
+         <!-- Section untuk Braiware -->
+        <h4>C. Brainware</h4>
+        <p>Brainware adalah orang yang menggunakan atau mengoperasikan sebuah perangkat komputer. Brainware  sering juga disebut sebagai perangkat intelektual yang memakai dan menjelajahi kemampuan Hardware ataupun Software. Pengguna komputer biasa disebut dengan user namun user sendiri ada macamnya:</p>
+        <ul>
+            <li><b>Sistem analis</b> merupakan tipe brainware yang memiliki tugas dalam melakukan pengawasan kinerja serta performa dari sebuah program maupun hardware yang digunakan. Seorang sistem analis akan mencatat apa saja evaluasi yang bisa dilakukan demi bisa meningkatkan fungsi serta kualitasnya.</li>
+            <li><b>Programmer</b> adalah orang yang punya kemampuan dalam bahasa pemrograman, sering berperan sebagai pembuat perangkat lunak yang di perlukan pada sistem komputerisasi.</li>
+            <li><b>Administrator</b> adalah orang yang bertugas mengelola sebuah sistem operasi dan program yang di gunakan pada komputer atau jaringan komputer.</li>
+            <li><b>Operator</b> adalah orang yang menjalankan sistem operasi dan program dalam perangkat komputer. </li>
+        </ul>
+
+  </section>
+
+  <!-- PAGE 5: PERANGKAT KERAS -->
+  <section id="page-perangkat" class="page card" Style="text-align: justify">
+    <h2>Pengenalan Perangkat Keras</h2>
+        <p class="subtitle">Klik pada salah satu kartu perangkat untuk melihat deskripsi lengkapnya.</p>
+
+    <div class="device-category">
+      <h3>Perangkat Input</h3>
+          <p>Perangkat input merupakan komponen perangkat keras (hardware) yang berfungsi untuk memasukkan data, perintah, atau sinyal dari luar ke dalam sistem komputer atau perangkat digital agar dapat diproses. Beberapa contohnya sebagai berikut:</p>
+      <div class="device-grid" id="inputGrid"></div>
+    </div>
+
+    <div class="device-category">
+      <h3>Perangkat Process</h3>
+      <p>Perangkat proses (processing device) adalah komponen perangkat keras (hardware) dalam sistem komputer yang bertugas menerima data dari perangkat masukan (input), mengolah data tersebut sesuai instruksi, dan meneruskannya ke perangkat keluaran (output) atau penyimpanan. Beberapa contohnya sebagai berikut:</p>
+      <div class="device-grid" id="processGrid"></div>
+    </div>
+
+    <div class="device-category">
+      <h3>Perangkat Output</h3>
+      <p>Alat output (perangkat keluaran) adalah perangkat keras komputer yang berfungsi untuk menampilkan atau menghasilkan informasi setelah data diproses oleh sistem komputer. Informasi tersebut dapat berupa teks, gambar, video, suara, atau cetakan fisik. Beberapa contohnya sebagai berikut:</p>
+      <div class="device-grid" id="outputGrid"></div>
+    </div>
+
+    <div class="device-category">
+      <h3>Perangkat Storage</h3>
+      <p>Perangkat penyimpanan (storage device) adalah komponen atau media hardware yang digunakan untuk menyimpan, membawa, dan mengakses data, file, serta aplikasi secara permanen maupun sementara dalam sistem komputer. Beberapa contohnya sebagi berikut:</p>
+      <div class="device-grid" id="storageGrid"></div>
+    </div>
+  </section>
+
+   <!-- PAGE 6: PERANGKAT LUNAK -->
+  <section id="page-lunak" class="page card">
+    <h2>Pengenalan Perangkat Lunak</h2>
+    <p class="subtitle">Klik pada salah satu kartu perangkat untuk melihat deskripsi lengkapnya.</p>
+
+    <div class="device-category" Style="text-align: justify">
+      <h3>Sistem Operasi (Operating System)</h3>
+      <p>Sistem operasi secara garis besar adalah perangkat lunak yang bertanggung jawab dalam pengaturan sumber daya perangkat keras dan menyediakan cara interaksi bagi pengguna untuk menjalankan aplikasi.
+        <b>fungsi dari sistem operasi adalah </b>untuk mengelola perangkat keras dan perangkat lunak serta memastikan bahwa komputer atau perangkat dapat bekerja dengan efisien. Berikut adalah beberapa jenis software sistem operasi yang umum digunakan:
+      </p>
+      <div class="device-grid" id="sistemoperasiGrid"></div>
+    </div>
+
+    <div class="device-category" Style="text-align: justify">
+      <h3>Software Aplikasi</h3>
+      <p>Software aplikasi (perangkat lunak aplikasi) adalah program komputer atau perangkat lunak yang dirancang khusus untuk membantu pengguna akhir menyelesaikan tugas-tugas spesifik dalam kehidupan sehari-serhari.
+        <b>Fungsi utama software aplikasi yaitu: </b>(1) Membantu pengguna menyelesaikan pekerjaan spesifik dengan lebih cepat dan efisien. (2) Memfasilitasi komunikasi, pengolahan data, pembuatan dokumen, dan hiburan. (3) Menghubungkan kebutuhan manusia dengan kemampuan perangkat keras. 
+        Berikut adalah beberapa jenis software aplikasi yang umum digunakan:
+      </p>
+      <div class="device-grid" id="aplikasiGrid"></div>
+    </div>
+
+    <div class="device-category" Style="text-align: justify">
+      <h3>Software Bahasa Pemrograman</h3>
+      <p>Aplikasi pemrograman (programming software atau tools) adalah perangkat lunak yang digunakan oleh pengembang (programmer) untuk menulis, merancang, menguji, dan memperbaiki (debug) kode sumber (source code) dalam pembuatan suatu program atau aplikasi komputer.
+        <b>Fungsi utama aplikasi pemrograman yaitu </b>menyediakan ruang kerja (editor) dengan fitur pelengkap seperti pewarnaan sintaks (syntax highlighting) dan pelengkap otomatis (code completion / IntelliSense) agar penulisan kode lebih cepat dan minim kesalahan.
+        Berikut adalah beberapa jenis software bahasa pemrograman yang umum digunakan:
+      </p>
+      <div class="device-grid" id="pemrogramanGrid"></div>
+    </div>
+
+    <div class="device-category" Style="text-align: justify">
+      <h3>Program Bantu</h3>
+      <p>Program bantu (atau perangkat lunak utilitas / utility software) adalah jenis perangkat lunak sistem yang dirancang untuk membantu, mengelola, menganalisis, mengoptimalkan, dan melindungi sistem komputer.
+        <b>Fungsi utama program bantu yaitu </b>membersihkan berkas sampah, merapikan data pada media simpan, dan menjaga agar komputer tidak lambat.
+        Berikut adalah beberapa jenis software program bantu yang umum digunakan:
+      </p>
+      <div class="device-grid" id="bantuGrid"></div>
+    </div>
+  </section>
+
+  <!-- PAGE 6: SIMULASI -->
+  <section id="page-simulasi" class="page card">
+    <h2>🎮 Simulasi Klasifikasi Perangkat</h2>
+    <p class="subtitle">Tarik (drag) item perangkat di sebelah kiri ke zona kategori yang tepat di sebelah kanan.</p>
+
+    <div class="sim-area">
+      <div>
+        <h3>Pilihan Perangkat</h3>
+        <div class="draggables" id="dragSource"></div>
+      </div>
+
+      <div class="zones">
+        <div class="zone" data-zone="Input">
+          <h4>⌨️ Input</h4>
+        </div>
+        <div class="zone" data-zone="Process">
+          <h4>🧠 Process</h4>
+        </div>
+        <div class="zone" data-zone="Output">
+          <h4>🖥️ Output</h4>
+        </div>
+        <div class="zone" data-zone="Storage">
+          <h4>💾 Storage</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" onclick="checkSimulation()">Periksa Jawaban</button>
+      <button class="btn btn-secondary" onclick="resetSimulation()">Risets Simulasi</button>
+    </div>
+
+    <div id="simResult"></div>
+  </section>
+
+  <!-- PAGE 7: POST TEST -->
+  <section id="page-posttest" class="page card">
+    <h2>📝 Post Test</h2>
+    <p class="subtitle">Uji pengetahuan akhir setelah mempelajari materi!</p>
+    
+    <div class="quiz-question">
+      <ul>
+      <h3>Post-Test Perangkat keras sistem komputer</h3>
+      <a href="https://forms.gle/jSQtZa2hJrJmvmDq7" class="tombol-link" target="_blank">
+  Buka Google Form </a>
+        <h3>Post-Test Perangkat lunak sistem komputer</h3>
+      <a href="https://forms.gle/AsWFGndxWtfkrDEVA" class="tombol-link" target="_blank">
+  Buka Google Form
+</a>
+      </ul>
+  </section>
+
+</main>
+
+<footer>
+  Media Pembelajaran Interaktif Informatika — Kurikulum Merdeka
+</footer>
+
+<!-- MODAL DETAIL PERANGKAT -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close" onclick="closeModal()">×</button>
+    <div class="modal-icon" id="modalIcon"></div>
+    <h3 id="modalTitle" style="margin: 0 0 8px; text-align: center;"></h3>
+    <div style="text-align: center; margin-bottom: 12px;">
+      <span class="badge" id="modalCategory"></span>
+    </div>
+    <p id="modalDesc" style="color: var(--text-muted); font-size: 0.95rem;"></p>
+  </div>
+</div>
+
+<script>
+// SWITCH TAB PAGE LOGIC
+function switchTab(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+  
+  // Deactivate all nav buttons
+  document.querySelectorAll('nav button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Show target page
+  const targetPage = document.getElementById(`page-${pageId}`);
+  if (targetPage) {
+    targetPage.classList.add('active');
+  }
+
+  // Set active nav button
+  const activeBtn = document.getElementById(`btn-${pageId}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+
+  // Scroll to top smooth
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// DEVICE DATA
+const devices = [
+  { 
+    name: "Keyboard", 
+    img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300", 
+    category: "Input", 
+    desc: "Keyboard digunakan untuk memasukkan huruf, angka, simbol, dan perintah ke komputer." 
+  },
+  { 
+    name: "Mouse", 
+    img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=300", 
+    category: "Input", 
+    desc: "Mouse digunakan untuk menggerakkan pointer, memilih, dan memindahkan objek." 
+  },
+  { 
+    name: "Webcam", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGGSUX6PewqEzo7U6EuLGRMhOAcb8YvaFD4O--aJrFkg&s=10", 
+    category: "Input", 
+    desc: "WebCam digunakan untuk merekam video, mengambil foto, atau melakukan konferensi jarak jauh." 
+  },
+  { 
+    name: "Mikrofon", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDpUjv55BuE_qyuwXuvfchUsYyceOCZ-B9GtYRY_eYjg&s=10", 
+    category: "Input", 
+    desc: "Mikrofon digunakan untuk merekam atau memasukkan data berupa suara." 
+  },
+  { 
+    name: "Scanner", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpGyjnEBbTdMTSSBCmYz7AVwZ9xMpOA8l2FbYWG9hTkA&s=10", 
+    category: "Input", 
+    desc: "Scanner digunakan memindai dokumen fisik atau foto agar diubah menjadi file digital" 
+  },
+  { 
+    name: "Joystick", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzpjHOZC5Bftqua1aYIQTuDZeJwOjJFjaQj8c-jUl1yL0RjdHjrMmgvzA&s=10", 
+    category: "Input", 
+    desc: "Joystick digunakan untuk memainkan game komputer" 
+  },
+  { 
+    name: "Barcode Reader", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYuG4BU6t44Pyj96XTLLiYrurEtPLJCNb_rso7IsdghQ&s=10", 
+    category: "Input", 
+    desc: "Barcode Reader digunakan untuk membaca kode garis (barcode)" 
+  },
+    { 
+    name: "Biometric Scanner", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaFGb8dSt3vKKIvNfWhpN0xBfVB9lQPz_3YUJddZv19sHz5YfgPjQRMHI&s=10", 
+    category: "Input", 
+    desc: "Biometric Scanner digunakan untuk memindai identitas unik seperti sidik jari, wajah, atau iris mata." 
+  },
+  { 
+    name: "Motherboard (Papan Induk)" ,
+    img: "https://png.pngtree.com/png-clipart/20240209/original/pngtree-computer-mainboard-motherboard-photo-png-image_14268735.png", 
+    category: "Process", 
+    desc: "Berfungsi sebagai pusat saraf atau jembatan penghubung yang mengontrol komunikasi data dan arus listrik antar seluruh komponen perangkat." 
+  },
+  { 
+    name: "CPU / Processor", 
+    img: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=300", 
+    category: "Process", 
+    desc: "Pusat pengendali dan pengolah data utama pada komputer." 
+  },
+  { 
+    name: "GPU (Graphics Processing Unit)" ,
+    img: "https://png.pngtree.com/png-vector/20250516/ourmid/pngtree-nvidia-rtx-3080-rog-strix-triple-fan-gpu-with-rgb-lighting-png-image_16297274.png", 
+    category: "Process", 
+    desc: "Berfungsi mengolah data grafis, visual, animasi, rendering video, hingga kebutuhan machine learning dan permainan (gaming)" 
+  },
+  { 
+    name: "RAM (Random Access Memory)" ,
+    img: "https://png.pngtree.com/png-vector/20241109/ourmid/pngtree-green-circuit-board-ram-module-showcasing-integrated-memory-chips-and-gold-png-image_14339322.png", 
+    category: "Process", 
+    desc: "Berfungsi menyimpan data dan instruksi aplikasi secara sementara agar dapat diakses oleh prosesor dengan cepat." 
+  },
+   { 
+    name: "ROM (Read Only Memory)" ,
+    img: "https://png.pngtree.com/png-vector/20250217/ourmid/pngtree-rom-image-png-image_15494147.png", 
+    category: "Process", 
+    desc: "perangkat ini merupakan memori yang hanya bisa dibaca namun tidak bisa diperbaharui." 
+  },
+  { 
+    name: "Motherboard (Papan Induk)" ,
+    img: "https://png.pngtree.com/png-clipart/20240209/original/pngtree-computer-mainboard-motherboard-photo-png-image_14268735.png", 
+    category: "Process", 
+    desc: "Berfungsi sebagai pusat saraf atau jembatan penghubung yang mengontrol komunikasi data dan arus listrik antar seluruh komponen perangkat." 
+  },
+  { 
+    name: "VGA Card (Kartu Grafis)" ,
+    img: "https://teknologi.visitklaten.com/wp-content/uploads/2023/07/Fungsi-VGA-Graphics-Card-dalam-Komputer-300x172.webp", 
+    category: "Process", 
+    desc: "Berfungsi menerjemahkan data digital dari komputer agar dapat ditampilkan dalam bentuk visual atau gambar ke layar monitor." 
+  },
+  { 
+    name: "LAN Card" ,
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJBVW-hNzNG0kht8KWxYP2IZToP5OXti1HRX7JUeNuGA&s=10", 
+    category: "Process", 
+    desc: "Perangkat ini terpasang pada mainboard dan berfungsi menghubungkan komputer dengan jaringan internet melalui kabel LAN." 
+  },
+  { 
+    name: "Monitor", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMnzZbkoFSPz7IBhlm5OwaKDOeqSF4AKvZ5QTu4FODiw&s=10", 
+    category: "Output", 
+    desc: "Menampilkan teks, gambar, dan video secara langsung di layar (jenis LCD, LED, atau OLED)." 
+  },
+  { 
+    name: "Printer", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRg_dN2znQz-upPUm_Q403_7zYHaiJxVuzSXV52KaQ3IQ&s=10", 
+    category: "Output", 
+    desc: "Mencetak dokumen atau gambar dari komputer ke media fisik seperti kertas. Contoh jenis: inkjet, laser, dan thermal." 
+  },
+  { 
+    name: "Speaker", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRr6Sj5-oYRyEwftnkWEhYQsbSPDOx9RcLorWFvY86iA&s=10", 
+    category: "Output", 
+    desc: "Mengubah sinyal digital/elektrik dari komputer menjadi keluaran berupa suara atau audio." 
+  },
+  { 
+    name: "Proyektor (Projector)", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSGlMaPJjpRJHJRY4N8tBTqv3Rg6MbFdpHk9Y8yuoV9Q&s=10", 
+    category: "Output", 
+    desc: "Memproyeksikan tampilan layar atau video dari komputer ke bidang lebar seperti dinding atau layar putih." 
+  },
+  { 
+    name: "Headphone / Earphone", 
+    img: "https://png.pngtree.com/png-clipart/20210929/ourmid/pngtree-earphone-white-png-png-image_3963102.png", 
+    category: "Output", 
+    desc: "Perangkat audio pribadi yang disematkan di telinga untuk mendengarkan suara tanpa mengganggu sekitar." 
+  },
+  { 
+    name: "HDD (Hard Disk Drive)", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1DYT7PxgNQI0l8Zt4knDq9lTsMwvDMcW52zGKEKe_ZA&s=10", 
+    category: "Storage", 
+    desc: "Menyimpan sistem operasi, aplikasi, dan file dalam jumlah besar menggunakan piringan magnetik yang berputar." 
+  },
+  { 
+    name: "Solid State Drive (SSD)", 
+    img: "https://png.pngtree.com/png-clipart/20250220/original/pngtree-ssd-solid-png-image_20483101.png", 
+    category: "Storage", 
+    desc: "Media penyimpanan modern berbasis chip memory flash tanpa komponen bergerak, sehingga jauh lebih cepat dan tahan benturan daripada HDD." 
+  },
+  { 
+    name: "Flashdisk & Kartu Memori", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrgvKIWgezBz2d4cHteeroyfChkW4pFT6yh_AclOjWPTooEgSyXSIkew4&s=10", 
+    category: "Storage", 
+    desc: "Perangkat portabel berbasis flash memory yang sering digunakan untuk memindahkan data dengan mudah." 
+  },
+  { 
+    name: "Media Optik", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT62oNuPDA8ve1TmgyrBnWoDQK8fZk2sNooq4VnyLdXVQ&s=10", 
+    category: "Storage", 
+    desc: "Cakram yang dibaca menggunakan sinar laser, seperti CD, DVD, dan Blu-Ray." 
+  },
+   { 
+    name: "Layanan Cloud", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCyzw5EYAqm01qegzDLG16xjruP1LiujOyWoWBhitz6Q&s=10", 
+    category: "Storage", 
+    desc: "Media penyimpanan berbasis internet seperti Google Drive, Dropbox, OneDrive, atau iCloud yang memungkinkan akses data dari mana saja." 
+  },
+  { 
+    name: "Windows", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnasL5hpKDWFqs2vg8tiYmb3ixQSh1u8fmfuGf1_2-AA&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Dikembangkan oleh Microsoft, Windows adalah sistem operasi yang sangat populer di kalangan pengguna PC. Menyediakan antarmuka grafis yang mudah dipahami oleh pengguna dari berbagai kalangan." 
+  },
+  { 
+    name: "macOS", 
+    img: "https://w7.pngwing.com/pngs/236/939/png-transparent-apple-macos-apple-love-text-computer.png", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi eksklusif yang digunakan oleh perangkat Apple, seperti MacBook dan iMac. Dikenal dengan antarmuka pengguna yang bersih dan fitur integrasi yang kuat dengan perangkat Apple lainnya."
+  },
+  { 
+    name: "Linux", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1El38iW3yk3YIvYakO7ZJMcPc_4l_OTLyQBDflIpzJg&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi open-source yang banyak digunakan oleh pengembang dan profesional IT. Dikenal dengan fleksibilitas dan keamanan tinggi, sering digunakan untuk server."
+  },
+   { 
+    name: "Unix", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6KtBs2UZbY1SnSuDWoSXhWo-SZmNGrBO7SXNapssIng&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi yang lebih sering digunakan untuk server dan mainframe. Sangat stabil dan dikenal dengan kemampuannya untuk menangani proses yang kompleks."
+  },
+  { 
+    name: "Android", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnfXveRMGkp3L4oWuxP67ig9fKPBPDn809aWGV8sNC1w&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi mobile berbasis Linux yang dirancang untuk perangkat seluler. Menjadi sistem operasi mobile yang paling banyak digunakan di dunia."
+  },
+  { 
+    name: "iOS", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZkzRT4w0_6CRa3qXwbF6QxfEMJjAvtlR6KL9JWle2rA&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi mobile eksklusif dari Apple yang digunakan pada perangkat iPhone, iPad, dan iPod Touch. Dikenal dengan keamanan yang ketat dan integrasi yang baik dengan perangkat Apple lainnya."
+  },
+  { 
+    name: "Chrome OS", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR11YTRT4fmrnBibaHP2Vq-BSO3Oqi0JYBrJvt3JPCKgQ&s=10", 
+    category: "Sistem_Operasi", 
+    desc: "Sistem operasi dari Google yang dirancang khusus untuk Chromebook. Fokus pada aplikasi berbasis web dan layanan cloud dari Google."
+  },
+  { 
+    name: "Microsoft Word", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr8xB1lJNpMbngjv3tFzIlbGCnzVtj0K0BGjelankjYQ&s=10", 
+    category: "Aplikasi", 
+    desc: "Membuat, mengedit, dan memformat dokumen teks seperti surat, laporan, atau makalah. Contoh: Microsoft Word, Notepad, Wordpad, Google Docs"
+  },
+  { 
+    name: "Microsoft Excel", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTypjvfK8m47oq6N4JtVKKDWKXwaCRBIPhf_k2SYjxHMQ&s=10", 
+    category: "Aplikasi", 
+    desc: "Microsoft Excel adalah perangkat lunak spreadsheet (pengolah angka) dari Microsoft Corporation yang berfungsi untuk mengorganisir, menghitung, dan menganalisis data numerik. Contoh: Microsoft Excel, WPS Spreadsheet, Google Sheets."
+  },
+  { 
+    name: "Desain Grafis & Multimedia", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvbO3Pe1k9waz8Zv6Lkd9jSLbrRp_d9KgjEPsj5nHmDw&s=10", 
+    category: "Aplikasi", 
+    desc: "Memadukan desain grafis dengan elemen gerak dan suara, meliputi animasi, video, audio, fotografi, serta elemen interaktif (seperti touchscreen atau situs web). Contoh: Adobe Photoshop, Canva, CorelDraw, VLC, Windows Media Player."
+  },
+  { 
+    name: "Basis Data (Database)", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxkrXDUUqbP48XIr1Rzp-4uIUeW7_Um2y_CjADV5k3sA&s=10", 
+    category: "Aplikasi", 
+    desc: "Perangkat lunak untuk membuat, mengelola, mengakses, dan memperbarui basis data (contoh: MySQL, PostgreSQL, Oracle)."
+  },
+  { 
+    name: "Peramban Web (Web Browser)", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQor1Qh__x6-RmK3fIIHlumJp71PuLgffKKVW8qjLPpOdMhbufMX4DVcSu&s=10", 
+    category: "Aplikasi", 
+    desc: "Perangkat lunak yang digunakan untuk mengakses, menerima, dan menampilkan informasi dari internet atau World Wide Web."
+  },
+   { 
+    name: "Visual Studio Code", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY_Ogh8DnD2odJyml1F2YoQ2i0csOVm-r2ShOx_aah3Q&s=10", 
+    category: "Pemrograman", 
+    desc: "Perangkat lunak source code editor ringan, gratis, dan open-source buatan Microsoft yang berfungsi sebagai wadah utama untuk menulis, mengedit, mengelola, serta melakukan debugging kode program."
+  },
+  { 
+    name: "Sublime Text", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcfaijkSk6aghr3rJpz4dyfyo0FGN6BqUTdrmeS6TW1g&s=10", 
+    category: "Pemrograman", 
+    desc: "Sublime Text adalah aplikasi penyunting teks dan kode sumber (source code editor) yang sangat populer di kalangan programmer karena kinerjanya yang super ringan, cepat, dan minimalis. Editor ini bersifat lintas platform sehingga bisa digunakan di Windows, macOS, dan Linux."
+  },
+    { 
+    name: "Android Studio", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlSDycPt9fWvPS1BA7257FniSRgf9ig9YbU7RuyLnMwQ&s=10", 
+    category: "Pemrograman", 
+    desc: "Android Studio adalah Integrated Development Environment (IDE) resmi untuk pengembangan aplikasi Android. Dikembangkan langsung oleh Google dan berbasis pada IntelliJ IDEA milik JetBrains, platform ini menyediakan seluruh peralatan yang dibutuhkan developer untuk menulis kode, melakukan debugging, menguji, hingga menerbitkan aplikasi Android."
+  },
+  { 
+    name: "Microsoft Defender", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgvFdFIRT4z2jZbbBMf302y7cd1NSqicypj9H4mGK5xQ&s=10", 
+    category: "Aplikasi_Bantu", 
+    desc: "Solusi keamanan siber dan perlindungan ancaman dari Microsoft yang dirancang untuk melindungi perangkat, data, serta identitas dari malware, ransomware, dan situs pengelabuan (phishing)."
+  },
+  { 
+    name: "Smadav", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQH2QZpSHoVuq5f-t40GwRz96BIaX2bSgCrAKEG7RzzQg&s=10", 
+    category: "Aplikasi_Bantu", 
+    desc: "Smadav adalah program antivirus buatan Indonesia yang dirancang khusus sebagai proteksi tambahan (lapisan kedua) untuk komputer atau PC."
+  },
+   { 
+    name: "Avast Free Antivirus", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqjTIH26WO178jMn8Az9iCV_ZTgnKo1IdMwl19Go4liQ&s=10", 
+    category: "Aplikasi_Bantu", 
+    desc: "Avast Free Antivirus adalah salah satu program antivirus gratis paling populer di dunia yang dirancang untuk melindungi perangkat dari malware, virus, ransomware, dan ancaman siber lainnya secara real-time."
+  },
+];
+
+// POPULATE DEVICE CARDS
+const categoryGrids = {
+  Input: document.getElementById("inputGrid"),
+  Process: document.getElementById("processGrid"),
+  Output: document.getElementById("outputGrid"),
+  Storage: document.getElementById("storageGrid")
+};
+// POPULATE DEVICE CARDS
+const categoriGrids = {
+  Sistem_Operasi: document.getElementById("sistemoperasiGrid"),
+  Aplikasi: document.getElementById("aplikasiGrid"),
+  Pemrograman: document.getElementById("pemrogramanGrid"),
+  Aplikasi_Bantu: document.getElementById("bantuGrid")
+};
+
+// GANTI BAGIAN FOR-EACH LAMA DENGAN INI:
+// Rendering Kartu Perangkat Menggunakan Img
+devices.forEach((d, i) => {
+  const card = document.createElement("div");
+  card.className = "device-card";
+  
+  card.innerHTML = `
+    <div class="device-media">
+      <img src="${d.img}" alt="${d.name}" class="device-img" loading="lazy">
+    </div>
+    <h4>${d.name}</h4>
+    <span class="badge">${d.category}</span>
+  `;
+  card.onclick = () => showDevice(i);
+  
+  if (categoryGrids[d.category]) {
+    categoryGrids[d.category].appendChild(card);
+  }
+});
+
+// Rendering Kartu Perangkat Menggunakan Img
+devices.forEach((d, i) => {
+  const card = document.createElement("div");
+  card.className = "device-card";
+  
+  card.innerHTML = `
+    <div class="device-media">
+      <img src="${d.img}" alt="${d.name}" class="device-img" loading="lazy">
+    </div>
+    <h4>${d.name}</h4>
+    <span class="badge">${d.category}</span>
+  `;
+  card.onclick = () => showDevice(i);
+  
+  if (categoriGrids[d.category]) {
+    categoriGrids[d.category].appendChild(card);
+  }
+});
+
+// Rendering Modal Popup Menggunakan Img
+function showDevice(i) {
+  const d = devices[i];
+  
+  document.getElementById("modalIcon").innerHTML = `
+    <img src="${d.img}" alt="${d.name}" class="modal-img">
+  `;
+  document.getElementById("modalTitle").textContent = d.name;
+  document.getElementById("modalCategory").textContent = d.category;
+  document.getElementById("modalDesc").textContent = d.desc;
+  document.getElementById("modal").style.display = "flex";
+}
+
+// GANTI FUNGSI showDevice LAMA DENGAN INI:
+function showDevice(i) {
+  const d = devices[i];
+  
+  // Menampilkan gambar di dalam popup modal
+  const modalMedia = document.getElementById("modalIcon");
+  modalMedia.innerHTML = `
+    <img src="${d.img}" alt="${d.name}" class="modal-img">
+  `;
+
+  // Mengisi teks nama, kategori, dan deskripsi perangkat
+  document.getElementById("modalTitle").textContent = d.name;
+  document.getElementById("modalCategory").textContent = d.category;
+  document.getElementById("modalDesc").textContent = d.desc;
+  
+  // Membuka modal
+  document.getElementById("modal").style.display = "flex";
+}
+
+// MODAL CONTROLS
+// MODAL CONTROLS
+function showDevice(i) {
+  const d = devices[i];
+  
+  // Menampilkan gambar yang sama dengan di kartu ke dalam popup modal
+  const modalMedia = document.getElementById("modalIcon");
+  modalMedia.innerHTML = `<img src="${d.img}" alt="${d.name}" class="modal-img">`;
+
+  // Menampilkan teks nama, kategori, dan penjelasan (deskripsi) perangkat
+  document.getElementById("modalTitle").textContent = d.name;
+  document.getElementById("modalCategory").textContent = d.category.replace('_', ' '); 
+  document.getElementById("modalDesc").textContent = d.desc;
+  
+  // Membuka modal
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+// Menutup modal jika area luar popup diklik
+window.onclick = function(e) {
+  if (e.target.id === "modal") closeModal();
+}
+
+// SIMULATION DRAG & DROP
+function createDragItems() {
+  const source = document.getElementById("dragSource");
+  source.innerHTML = "";
+  
+  document.querySelectorAll(".zone").forEach(z => {
+    [...z.querySelectorAll(".drag-item")].forEach(item => item.remove());
+    z.classList.remove("correct", "wrong");
+  });
+
+  const simDevices = [
+    ["Keyboard", "Input"],
+    ["Mouse", "Input"],
+    ["CPU", "Process"],
+    ["RAM", "Process"],
+    ["Monitor", "Output"],
+    ["Printer", "Output"],
+    ["SSD", "Storage"],
+    ["Flash Drive", "Storage"]
+  ];
+
+  simDevices.sort(() => Math.random() - 0.5).forEach(([name, category]) => {
+    const item = document.createElement("div");
+    item.className = "drag-item";
+    item.draggable = true;
+    item.textContent = name;
+    item.dataset.category = category;
+    
+    item.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", name);
+      window.draggedElement = item;
+    });
+    
+    source.appendChild(item);
+  });
+
+  document.getElementById("simResult").style.display = "none";
+}
+
+document.querySelectorAll(".zone").forEach(zone => {
+  zone.addEventListener("dragover", e => e.preventDefault());
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    if (window.draggedElement) zone.appendChild(window.draggedElement);
+  });
+});
+
+document.getElementById("dragSource").addEventListener("dragover", e => e.preventDefault());
+document.getElementById("dragSource").addEventListener("drop", e => {
+  e.preventDefault();
+  if (window.draggedElement) e.currentTarget.appendChild(window.draggedElement);
+});
+
+function checkSimulation() {
+  const items = document.querySelectorAll(".drag-item");
+  let correct = 0;
+
+  document.querySelectorAll(".zone").forEach(zone => {
+    zone.classList.remove("correct", "wrong");
+    const zoneItems = zone.querySelectorAll(".drag-item");
+
+    let zoneCorrect = zoneItems.length > 0;
+    zoneItems.forEach(item => {
+      if (item.dataset.category === zone.dataset.zone) correct++;
+      else zoneCorrect = false;
+    });
+
+    if (zoneItems.length > 0) {
+      zone.classList.add(zoneCorrect ? "correct" : "wrong");
+    }
+  });
+
+  const result = document.getElementById("simResult");
+  result.style.display = "block";
+
+  if (correct === items.length) {
+    result.style.background = "#f0fdf4";
+    result.style.color = "#166534";
+    result.textContent = `🎉 Luar Biasa! Semua (${correct}/${items.length}) perangkat berhasil diklasifikasikan dengan benar!`;
+  } else {
+    result.style.background = "#fef2f2";
+    result.style.color = "#991b1b";
+    result.textContent = `Kamu berhasil menempatkan ${correct} dari ${items.length} perangkat. Cek area yang berwarna merah!`;
+  }
+}
+
+function resetSimulation() {
+  createDragItems();
+}
+
+
+// INITIALIZATION
+document.addEventListener("DOMContentLoaded", () => {
+  switchTab('tujuan');
+  createDragItems();
+});
+</script>
+
+</body>
+</html>
